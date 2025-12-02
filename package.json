@@ -1,0 +1,24 @@
+{
+  "name": "diarias-puxada",
+  "version": "1.0.0",
+  "description": "Um sistema simples, que consegue calcular a quantidade de diárias de motoristas de carreta, calcular o valor das viagens e emitir avisos automaticos quando o valor estiver abaixo do recomentado.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^7.0.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prisma": "^7.0.1"
+  }
+}
