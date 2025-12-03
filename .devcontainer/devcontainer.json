@@ -1,0 +1,11 @@
+{
+  "name": "Diarias Backend",
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "containerEnv": {
+    "NVM_DIR": "/usr/local/share/nvm",
+    "NODE_VERSION": "20"
+  },
+  "postStartCommand": "nvm install 20 && nvm use 20"
+}

@@ -1,29 +1,21 @@
 const jwt = require("jsonwebtoken");
-const prisma = require("../prisma");
 
-module.exports = async function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ message: "Token não fornecido" });
+function authenticate(req, res, next) {
+  const header = req.headers.authorization;
+
+  if (!header) {
+    return res.status(401).json({ message: "Token não enviado" });
   }
 
-  const parts = authHeader.split(" ");
-  if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return res.status(401).json({ message: "Formato de token inválido" });
-  }
-
-  const token = parts[1];
+  const token = header.replace("Bearer ", "");
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await prisma.user.findUnique({ where: { id: payload.userId }});
-    if (!user) return res.status(401).json({ message: "Usuário não encontrado" });
-
-    req.user = { id: user.id, name: user.name, role: user.role };
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Token inválido ou expirado" });
+    return res.status(401).json({ message: "Token inválido" });
   }
-};
+}
+
+module.exports = authenticate;
