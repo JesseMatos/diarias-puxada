@@ -5,71 +5,73 @@ const prisma = require("../prisma");
 
 const router = express.Router();
 
-// Registro
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role = "driver" } = req.body;
+    const { name, cpf } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Campos obrigatórios faltando" });
+    if (!name || !cpf || cpf.length < 4) {
+      return res.status(400).json({ error: "Dados inválidos" });
     }
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) return res.status(400).json({ message: "E-mail já cadastrado" });
-
-    const hashed = await bcrypt.hash(password, 10);
+    const rawPassword = cpf.substring(0, 4);
+    const hashed = await bcrypt.hash(rawPassword, 10);
 
     const user = await prisma.user.create({
-      data: { name, email, password: hashed, role }
+      data: {
+        name,
+        cpf,
+        password: hashed,
+        role: "driver",
+        wallet: { create: { balance: 0, threshold: 0 } }
+      }
     });
 
-    await prisma.wallet.create({
-      data: { driverId: user.id, balance: 0, threshold: 100 }
-    });
-
-    const safeUser = {
+    return res.status(201).json({
       id: user.id,
       name: user.name,
-      email: user.email,
-      role: user.role
-    };
+      cpf: user.cpf,
+      senha_criada: rawPassword
+    });
 
-    res.status(201).json({ message: "Usuário criado", user: safeUser });
   } catch (err) {
-    res.status(500).json({ message: "Erro ao registrar usuário" });
+    console.error("REGISTER ERROR:", err);
+    return res.status(500).json({ error: "Erro ao registrar" });
   }
 });
 
-// Login
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "Credenciais faltando" });
+    const { cpf, password } = req.body;
+
+    if (!cpf || !password) {
+      return res.status(400).json({ error: "CPF e senha são obrigatórios" });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ message: "Usuário não encontrado" });
+    const user = await prisma.user.findUnique({ where: { cpf } });
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Senha incorreta" });
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ error: "Senha incorreta" });
+    }
 
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      { userId: user.id },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "8h" }
     );
 
-    const safeUser = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role
-    };
+    return res.json({
+      token,
+      user: { id: user.id, name: user.name, cpf: user.cpf, role: user.role }
+    });
 
-    res.json({ token, user: safeUser });
   } catch (err) {
-    res.status(500).json({ message: "Erro ao fazer login" });
+    console.error("LOGIN ERROR:", err);
+    return res.status(500).json({ error: "Erro no login" });
   }
 });
 
