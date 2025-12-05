@@ -10,10 +10,20 @@ const authenticate = require("./middleware/auth");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://127.0.0.1:5500",
+    "https://shiny-adventure-59p7jqjx64wf7rvq-5500.app.github.dev",
+    "https://shiny-adventure-59p7jqjx64wf7rvq-3333.app.github.dev"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+
 app.use(express.json());
 
-// Rota simples para testar
+// Rota simples
 app.get("/", (req, res) => {
   res.json({ message: "API de Diárias funcionando!" });
 });
