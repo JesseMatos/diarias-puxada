@@ -2,7 +2,7 @@
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "cpf" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL
 );
@@ -29,7 +29,7 @@ CREATE TABLE "Trip" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_cpf_key" ON "User"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Wallet_driverId_key" ON "Wallet"("driverId");
