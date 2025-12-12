@@ -13,8 +13,9 @@ const app = express();
 app.use(cors({
   origin: [
     "http://127.0.0.1:5500",
-    "https://shiny-adventure-59p7jqjx64wf7rvq-5500.app.github.dev",
-    "https://shiny-adventure-59p7jqjx64wf7rvq-3333.app.github.dev"
+    "https://shiny-adventure-59p7jqjx64wf7rvq-3333.app.github.dev",
+    "https://shiny-adventure-59p7jqjx64wf7rvq-5502.app.github.dev",
+    "https://shiny-adventure-59p7jqjx64wf7rvq-8080.app.github.dev"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true

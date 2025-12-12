@@ -7,21 +7,21 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, cpf } = req.body;
+    const { name, cpf, password, role } = req.body;
 
-    if (!name || !cpf || cpf.length < 4) {
+    if (!name || !cpf || !password || !role) {
       return res.status(400).json({ error: "Dados inválidos" });
     }
 
-    const rawPassword = cpf.substring(0, 4);
-    const hashed = await bcrypt.hash(rawPassword, 10);
+    // criptografia da senha
+    const hashed = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
         name,
         cpf,
         password: hashed,
-        role: "driver",
+        role,
         wallet: { create: { balance: 0, threshold: 0 } }
       }
     });
@@ -30,12 +30,12 @@ router.post("/register", async (req, res) => {
       id: user.id,
       name: user.name,
       cpf: user.cpf,
-      senha_criada: rawPassword
+      role: user.role
     });
 
   } catch (err) {
     console.error("REGISTER ERROR:", err);
-    return res.status(500).json({ error: "Erro ao registrar" });
+    return res.status(500).json({ error: "Erro ao registrar", detail: err.message });
   }
 });
 

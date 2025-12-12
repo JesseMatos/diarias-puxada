@@ -13,6 +13,7 @@ model User {
   cpf      String  @unique
   password String
   role     String
+  phone    String?
   wallet   Wallet?
   trips    Trip[]
 }
@@ -26,12 +27,38 @@ model Wallet {
 }
 
 model Trip {
-  id       Int       @id @default(autoincrement())
-  driverId Int
-  departAt DateTime
-  arriveAt DateTime?
-  duration Int?
-  value    Float?
-  status   String    @default("ongoing")
-  user     User      @relation(fields: [driverId], references: [id])
+  id              Int       @id @default(autoincrement())
+  driverId        Int
+  driver          User      @relation(fields: [driverId], references: [id])
+
+  driverName      String
+  driverCPF       String
+  driverPhone     String?
+
+  departDepotAt       DateTime?
+  arriveFactoryAt     DateTime?
+  loadStartAt         DateTime?
+  loadEndAt           DateTime?
+  leaveFactoryAt      DateTime?
+  arriveDepotAt       DateTime?
+
+  startLat        Float?
+  startLng        Float?
+  endLat          Float?
+  endLng          Float?
+
+  totalTripHours       Float?
+  travelToFactoryHours Float?
+  waitBeforeLoadHours  Float?
+  loadingHours         Float?
+  postLoadHours        Float?
+  returnHours          Float?
+
+  diarias        Int?
+  refeicoes      Int?
+  valorFinal     Float?
+
+  status         String    @default("pending")
+  createdAt      DateTime  @default(now())
 }
+

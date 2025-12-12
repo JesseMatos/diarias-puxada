@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Diárias</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Sistema de Diárias</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-    <div class="container">
-        <h2>Entrar</h2>
-        <input id="cpf" placeholder="CPF" maxlength="11">
-        <input id="password" placeholder="Senha" type="password">
-        <button id="btnLogin">Entrar</button>
-    </div>
-    <script src="./app.js" defer></script>          
+
+  <div class="login-container">
+    <h2>Entrar no Sistema</h2>
+
+    <input id="cpf" type="text" placeholder="CPF" />
+    <input id="password" type="password" placeholder="Senha" />
+
+    <button id="btnLogin">Entrar</button>
+
+    <p id="error" class="error"></p>
+  </div>
+
+  <script src="app.js"></script>
+
 </body>
 </html>
